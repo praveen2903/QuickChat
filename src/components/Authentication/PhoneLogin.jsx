@@ -8,6 +8,8 @@ import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { auth } from '../../firebase/firebase';
 import { toast } from 'react-toastify';
 import AuthNav from './AuthNav';
+import { doc, getDoc } from 'firebase/firestore';
+import { firestore } from '../../firebase/firebase'; // Assuming firestore is exported from your firebase config file
 
 const PhoneLogin = () => {
   const [number, setNumber] = useState('');
@@ -20,9 +22,15 @@ const PhoneLogin = () => {
   const setUpRecaptcha = (number) => {
     const recaptcha = new RecaptchaVerifier(auth, 'recaptcha-container', {});
     recaptcha.render();
-    const confirm=signInWithPhoneNumber(auth, number, recaptcha);
+    const confirm = signInWithPhoneNumber(auth, number, recaptcha);
     console.log(confirm);
     return confirm;
+  };
+
+  const checkPhoneNumberRegistered = async (phoneNumber) => {
+    const docRef = doc(firestore, 'users', phoneNumber);
+    const docSnap = await getDoc(docRef);
+    return docSnap.exists();
   };
 
   const getOtp = async (e) => {
@@ -35,6 +43,11 @@ const PhoneLogin = () => {
     }
 
     try {
+      const isRegistered = await checkPhoneNumberRegistered(number);
+      if (!isRegistered) {
+        toast.error('Please register before logging in.');
+        return;
+      }
       const response = await setUpRecaptcha(number);
       setConfirmObj(response);
       setFlag(true);
@@ -77,9 +90,9 @@ const PhoneLogin = () => {
           <CardBody className="flex flex-col gap-4">
             <form onSubmit={getOtp} style={{ display: !flag ? 'block' : 'none' }}>
               <div className="form-control">
-              <Typography variant="h6" color="blue-gray" className="-mb-3">
-               Phone Number
-              </Typography>
+                <Typography variant="h6" color="blue-gray" className="-mb-3">
+                  Phone Number
+                </Typography>
                 <PhoneInput
                   defaultCountry="IN"
                   placeholder="Enter phone number"
@@ -105,27 +118,27 @@ const PhoneLogin = () => {
                   <span className="label-text text-black font-extrabold font-serif mb-3">Enter OTP</span>
                 </label>
                 <OTPInput
-                    value={otp}
-                    onChange={setOtp}
-                    numInputs={6}
-                    separator={<span style={{ width: "8px" }}></span>}
-                    isInputNum={true}
-                    shouldAutoFocus={true}
-                    renderInput={renderInput}
-                    inputStyle={{
-                      border: "1px solid transparent",
-                      borderRadius: "8px",
-                      width: "54px",
-                      height: "54px",
-                      fontSize: "16px",
-                      color: "#000",
-                      fontWeight: "400",
-                      caretColor: "blue"
-                    }}
-                    focusStyle={{
-                      border: "1px solid #CFD3DB",
-                      outline: "none"
-                    }}
+                  value={otp}
+                  onChange={setOtp}
+                  numInputs={6}
+                  separator={<span style={{ width: "8px" }}></span>}
+                  isInputNum={true}
+                  shouldAutoFocus={true}
+                  renderInput={renderInput}
+                  inputStyle={{
+                    border: "1px solid transparent",
+                    borderRadius: "8px",
+                    width: "54px",
+                    height: "54px",
+                    fontSize: "16px",
+                    color: "#000",
+                    fontWeight: "400",
+                    caretColor: "blue"
+                  }}
+                  focusStyle={{
+                    border: "1px solid #CFD3DB",
+                    outline: "none"
+                  }}
                 />
               </div>
               <div className="form-control mt-8">
