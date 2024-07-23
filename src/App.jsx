@@ -10,6 +10,7 @@ import Welcome from "./components/chatpage/Welcome";
 import ResetPassword from "./components/Authentication/ResetPassword";
 import PhoneLogin from "./components/Authentication/PhoneLogin";
 import PhoneRegister from "./components/Authentication/PhoneRegister";
+import VerifyingEmail from "./components/Authentication/VerifyingEmail";
  
 
 export default function Example() {
@@ -31,6 +32,7 @@ export default function Example() {
             <Route path="/login" element={<Login/>}/>
             <Route path='/register' element={<Register/>}/>
             <Route path="/reset" element={<ResetPassword/>}/>
+            <Route path="/verifypage" element={<VerifyingEmail/>}/>
             <Route path="/phoneregister" element={<PhoneRegister/>}/>
             <Route path="/phonelogin" element={<PhoneLogin/>}/>
             <Route path="/chat" element={<ProtectedRoute><Welcome/></ProtectedRoute>}/>

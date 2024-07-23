@@ -12,7 +12,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { deleteUser } from 'firebase/auth';
 import { useEffect,useState } from 'react';
 import { toast } from 'react-toastify';
-import {AuthNav} from './AuthNav'
+import AuthNav from './AuthNav'
 
 const VerifyingEmail = () => {
   const navigate=useNavigate()

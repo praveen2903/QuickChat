@@ -1,6 +1,7 @@
+import { Card, CardBody, CardFooter, CardHeader, Typography, Button, Input } from '@material-tailwind/react';
+import OTPInput from 'react-otp-input';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MdOutlineArrowBack } from 'react-icons/md';
 import 'react-phone-number-input/style.css';
 import PhoneInput from 'react-phone-number-input';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
@@ -19,7 +20,9 @@ const PhoneLogin = () => {
   const setUpRecaptcha = (number) => {
     const recaptcha = new RecaptchaVerifier(auth, 'recaptcha-container', {});
     recaptcha.render();
-    return signInWithPhoneNumber(auth, number, recaptcha);
+    const confirm=signInWithPhoneNumber(auth, number, recaptcha);
+    console.log(confirm);
+    return confirm;
   };
 
   const getOtp = async (e) => {
@@ -55,53 +58,102 @@ const PhoneLogin = () => {
     }
   };
 
+  const renderInput = (props) => <Input {...props} />;
+
   return (
     <div>
       <AuthNav />
-      <div className="hero-content flex-col lg:flex-row-reverse">
-        <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-white bg-opacity-75">
-          <Link to="/" className="text-3xl float-left my-4 text-black flex gap-3">
-            <MdOutlineArrowBack size={20} />
-            <span className="text-sm">Cancel</span>
-          </Link>
-          <form onSubmit={getOtp} className="card-body" style={{ display: !flag ? 'block' : 'none' }}>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text text-black font-extrabold font-serif">Phone number</span>
-              </label>
-              <PhoneInput
-                defaultCountry="IN"
-                placeholder="Enter phone number"
-                className="input bg-white text-black input-bordered bg-opacity-75"
-                required
-                value={number}
-                onChange={setNumber}
-              />
-            </div>
-            <div id="recaptcha-container" />
-            <div className="form-control mt-8">
-              <button className="btn btn-primary rounded-3xl bg-blue-500 hover-bg-blue-700 text-white uppercase font-bold">
-                Send OTP
-              </button>
-            </div>
-          </form>
-          <form onSubmit={verifyOtp} className="card-body" style={{ display: flag ? 'block' : 'none' }}>
-            <div>
-              {err && <span className="text-red-700">{err}</span>}
-            </div>
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text text-black font-extrabold font-serif">Enter OTP</span>
-              </label>
-              <input type="number" placeholder="Enter OTP....." onChange={(e) => setOtp(e.target.value)} />
-            </div>
-            <div className="form-control mt-8">
-              <button className="btn btn-primary rounded-3xl bg-blue-500 hover-bg-blue-700 text-white uppercase font-bold">
-                Verify OTP
-              </button>
-            </div>
-          </form>
-        </div>
+      <div className='flex items-center justify-center h-screen'>
+        <Card className="w-96">
+          <CardHeader
+            variant="gradient"
+            color="gray"
+            className="mb-4 grid h-28 place-items-center"
+          >
+            <Typography variant="h3" color="white">
+              Phone Login
+            </Typography>
+          </CardHeader>
+          <CardBody className="flex flex-col gap-4">
+            <form onSubmit={getOtp} style={{ display: !flag ? 'block' : 'none' }}>
+              <div className="form-control">
+              <Typography variant="h6" color="blue-gray" className="-mb-3">
+               Phone Number
+              </Typography>
+                <PhoneInput
+                  defaultCountry="IN"
+                  placeholder="Enter phone number"
+                  className="input bg-white text-black input-bordered mt-3"
+                  required
+                  value={number}
+                  onChange={setNumber}
+                />
+              </div>
+              <div id="recaptcha-container" />
+              <div className="form-control mt-8">
+                <Button variant="gradient" type="submit" className="rounded-3xl bg-blue-500 hover-bg-blue-700 text-white uppercase font-bold">
+                  Send OTP
+                </Button>
+              </div>
+            </form>
+            <form onSubmit={verifyOtp} style={{ display: flag ? 'block' : 'none' }}>
+              <div>
+                {err && <span className="text-red-700">{err}</span>}
+              </div>
+              <div className="form-control">
+                <label className="label">
+                  <span className="label-text text-black font-extrabold font-serif mb-3">Enter OTP</span>
+                </label>
+                <OTPInput
+                    value={otp}
+                    onChange={setOtp}
+                    numInputs={6}
+                    separator={<span style={{ width: "8px" }}></span>}
+                    isInputNum={true}
+                    shouldAutoFocus={true}
+                    renderInput={renderInput}
+                    inputStyle={{
+                      border: "1px solid transparent",
+                      borderRadius: "8px",
+                      width: "54px",
+                      height: "54px",
+                      fontSize: "12px",
+                      color: "#000",
+                      fontWeight: "400",
+                      caretColor: "blue"
+                    }}
+                    focusStyle={{
+                      border: "1px solid #CFD3DB",
+                      outline: "none"
+                    }}
+                />
+              </div>
+              <div className="form-control mt-8">
+                <Button variant="gradient" type="submit" className="rounded-3xl bg-blue-500 hover-bg-blue-700 text-white uppercase font-bold">
+                  Verify OTP
+                </Button>
+              </div>
+            </form>
+          </CardBody>
+          <CardFooter className="pt-0">
+            <Typography variant="small" className="mt-6 flex justify-center">
+              Don&apos;t have an account?
+              <Typography
+                as="a"
+                variant="small"
+                color="blue-gray"
+                className="ml-1 font-bold"
+              >
+                <Link to="/phoneregister">Register</Link>
+              </Typography>
+            </Typography>
+            <Typography>
+              <div className="text-center text-red-700 p-4 m-2">
+                {err && <span>Enter correct OTP</span>}
+              </div>
+            </Typography>
+          </CardFooter>
+        </Card>
       </div>
     </div>
   );

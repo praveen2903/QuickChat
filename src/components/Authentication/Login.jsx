@@ -171,8 +171,7 @@ export default function Login() {
               <Typography variant="small" className="mt-6 flex justify-center">
                 Don&apos;t have an account?
                 <Typography
-                  as="a"
-                  href="#signup"
+                  as="p"
                   variant="small"
                   color="blue-gray"
                   className="ml-1 font-bold"
