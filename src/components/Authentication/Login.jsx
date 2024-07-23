@@ -49,7 +49,7 @@ export default function Login() {
   }
 
   const handleGoogleLogin=async ()=>{
-    // console.log(googlevalue)
+    console.log(googlevalue)
     const email = googlevalue;
     if (email && await isEmailAlreadyRegistered(email)) {
       alert(`User with email ${email} is already registered with Google.`);
@@ -60,7 +60,7 @@ export default function Login() {
       localStorage.setItem("email",data.user.email);
       await setDoc(doc(db, "users", data.user.uid), {
         uid: data.user.uid,
-        googlevalue,
+        googlevalue:googlevalue,
         photoURL:data.user.photoURL,
         displayName:data.user.displayName,
       });
@@ -101,7 +101,6 @@ export default function Login() {
   const handleFacebookLogin=()=>{
     signInWithPopup(auth,facebookprovider).then(async (data)=>{
       setFacebookValue(data.user.email);
-      // console.log(facebookvalue)
       localStorage.setItem("email",data.user.email);
       await setDoc(doc(db, "users", data.user.uid), {
         uid: data.user.uid,

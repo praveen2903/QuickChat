@@ -163,7 +163,7 @@ export function HomeNav() {
           </Button>
           <Button variant="gradient" size="sm" fullWidth>
             <RouteLink to="/register" fullWidth variant="gradient" size="sm">
-                <span>Sign in</span>
+                <span>Sign up</span>
             </RouteLink>
           </Button>
         </div>
