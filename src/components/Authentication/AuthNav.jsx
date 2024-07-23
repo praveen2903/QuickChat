@@ -9,7 +9,7 @@ import MoonIcon from '../shared/MoonIcon';
 const AuthNav = () => {
     const { theme, handleToggle } = useContext(ThemeContext);
   return (
-    <div>
+    <div className='sm:mb-10 md:mb-1'>
         <div className="navbar bg-base-100">
             <div className="flex-1 mr-4 cursor-pointer py-1.5 font-extrabold text-[#4338ca] font-sans lg:text-[24px]">
                 <img src={logo} alt="logo" className="inline-block items-center h-[30px] lg:h-[50px] w-5 lg:w-10 mr-1 lg:mr-3 text-primary-light dark:text-primary-dark" />

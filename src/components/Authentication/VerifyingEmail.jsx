@@ -7,12 +7,17 @@ import {
 import img from '../../assets/email.png';
 import { Typewriter } from 'react-simple-typewriter';
 import { auth } from '../../firebase/firebase';
-import { MdOutlineArrowBack } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 import { deleteUser } from 'firebase/auth';
 import { useEffect,useState } from 'react';
 import { toast } from 'react-toastify';
-import AuthNav from './AuthNav'
+import logo from '../../assets/applogo.png'
+import { FaHome } from "react-icons/fa";
+import { useContext } from 'react';
+import { ThemeContext } from '../../context/ThemeContext';
+import SunIcon from '../shared/SunIcon';
+import MoonIcon from '../shared/MoonIcon';
+
 
 const VerifyingEmail = () => {
   const navigate=useNavigate()
@@ -39,7 +44,7 @@ const VerifyingEmail = () => {
 
   useEffect(() => {
     if (emailVerified) {
-      toast.success(`Welcome to image gallery ${auth.currentUser.displayName}`)
+      toast.success(`Welcome to Quick Talk ${auth.currentUser.displayName}`)
       navigate('/chat')
     }
   }, [emailVerified,navigate]);
@@ -48,13 +53,28 @@ const VerifyingEmail = () => {
     const user=auth.currentUser;
     deleteUser(user);
   }
+  const { theme, handleToggle } = useContext(ThemeContext);
   return (
     <div>
-        <AuthNav/>
-       <Card className="mt-6 w-[400px] p-4">
+        <div className="navbar bg-base-100">
+            <div className="flex-1 mr-4 cursor-pointer py-1.5 font-extrabold text-[#4338ca] font-sans lg:text-[24px]">
+                <img src={logo} alt="logo" className="inline-block items-center h-[30px] lg:h-[50px] w-5 lg:w-10 mr-1 lg:mr-3 text-primary-light dark:text-primary-dark" />
+                Quick <span className="text-[#312e81]">Talk</span>
+            </div>
+            <div className="flex-none gap-2">
+                <div className="form-control ml-2 md:ml-0">
+                    <label className="swap swap-rotate">
+                        <input type="checkbox" onChange={handleToggle} checked={theme === "light" ? false : true} />
+                        <SunIcon />
+                        <MoonIcon />
+                    </label>
+                </div>
+            </div>
+        </div>
+       <Card className="flex items-center justify-center h-screen">
         <Link to="/register" className="text-3xl float-left my-4 text-black flex gap-3">
             <button onClick={DeleteAccount} className='flex hover:text-blue-800'>
-              <MdOutlineArrowBack size={20} />
+              <FaHome size={35}/>
               <span className="text-sm">Cancel</span>
             </button>
           </Link>

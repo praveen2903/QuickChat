@@ -6,7 +6,7 @@ import Register from "./components/Authentication/Register";
 import { ToastContainer } from "react-toastify";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthenticationContext";
-import Welcome from "./components/chatpage/Welcome";
+import Welcome from "./components/chatwelcome/Welcome";
 import ResetPassword from "./components/Authentication/ResetPassword";
 import PhoneLogin from "./components/Authentication/PhoneLogin";
 import PhoneRegister from "./components/Authentication/PhoneRegister";

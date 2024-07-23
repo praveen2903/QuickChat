@@ -60,7 +60,7 @@ const PhoneRegister = () => {
       setConfirmObj(response);
       setFlag(true);
     } catch (err) {
-      setErr('Error setting up reCAPTCHA.');
+      toast.error("failure in setting recaptha")
     }
   };
 
@@ -101,7 +101,7 @@ const PhoneRegister = () => {
       toast.success(`Registration successful, welcome ${name}`);
       navigate('/chat');
     } catch (err) {
-      setErr('Incorrect OTP.');
+      toast.error("Incorrect OTP!!!")
     }
   };
 
@@ -219,11 +219,7 @@ const PhoneRegister = () => {
                 <Link to="/phonelogin">login</Link>
               </Typography>
             </Typography>
-            <Typography>
-              <div className="text-center text-red-700 p-4 m-2">
-                {err && <span>Enter correct OTP</span>}
-              </div>
-            </Typography>
+            
           </CardFooter>
         </Card>
       </div>

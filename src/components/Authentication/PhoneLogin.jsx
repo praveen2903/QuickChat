@@ -52,7 +52,7 @@ const PhoneLogin = () => {
       setConfirmObj(response);
       setFlag(true);
     } catch (err) {
-      setErr('Error setting up reCAPTCHA.');
+      toast.error('Error setting up reCAPTCHA.');
     }
   };
 
@@ -67,7 +67,7 @@ const PhoneLogin = () => {
       toast.success('Login successful');
       navigate('/home');
     } catch (err) {
-      setErr('Incorrect OTP.');
+      toast.error('Incorrect OTP.');
     }
   };
 

@@ -22,7 +22,6 @@ import { useState, useEffect } from "react";
 import { doc, setDoc, getDocs, collection, query, where } from "firebase/firestore";
  
 export default function Login() {
-  const [err, setErr] = useState(false);
   const navigate = useNavigate();
   const [googlevalue,setGoogleValue]=useState('');
   const [githubvalue,setGithubValue]=useState('');
@@ -128,7 +127,7 @@ export default function Login() {
       navigate("/chat");
       toast.success("Login successful, welcome")
     } catch (error) {
-      setErr(true);
+      toast.error("Email or Password incorrect")
     }
   };
 
@@ -178,16 +177,12 @@ export default function Login() {
                   <Link to="/register">Sign Up</Link>
                 </Typography>
               </Typography>
-              <Typography>
-                <div className="text-center text-red-700 p-4 m-2">
-                  {err && <span>Mail id or password is incorrect</span>}
-              </div>
-              </Typography>
+            
             </CardFooter>
-          <div className="-mt-8">
+          <div className="">
               <p className="text-center text-[18px] mb-3">or continue with</p>
-              <div className="flex gap-10 items-center justify-center mb-4">
-                <div className="flex gap-10 items-center justify-center mb-4">
+              <div className="flex gap-10 items-center justify-center mb-2">
+                <div className="flex gap-10 items-center justify-center mb-3">
                   <Link to="/phonelogin" className="cursor-pointer">
                     <img src={phone} className="rounded h-[32px] w-[32px]" alt="G"/>
                   </Link>
