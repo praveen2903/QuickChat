@@ -9,7 +9,7 @@ import { auth } from '../../firebase/firebase';
 import { toast } from 'react-toastify';
 import AuthNav from './AuthNav';
 import { doc, getDoc } from 'firebase/firestore';
-import { firestore } from '../../firebase/firebase'; // Assuming firestore is exported from your firebase config file
+import { db } from '../../firebase/firebase'; // Assuming firestore is exported from your firebase config file
 
 const PhoneLogin = () => {
   const [number, setNumber] = useState('');
@@ -28,7 +28,7 @@ const PhoneLogin = () => {
   };
 
   const checkPhoneNumberRegistered = async (phoneNumber) => {
-    const docRef = doc(firestore, 'users', phoneNumber);
+    const docRef = doc(db, 'users', phoneNumber);
     const docSnap = await getDoc(docRef);
     return docSnap.exists();
   };
