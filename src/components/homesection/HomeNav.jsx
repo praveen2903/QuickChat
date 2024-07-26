@@ -104,7 +104,7 @@ export function HomeNav() {
             <span className="text-[20px]">Login</span>
           </RouteLink>
           <RouteLink to="/register" variant="gradient" size="sm" className="hidden lg:inline-block bg-black text-white p-2 rounded-full">
-            <span className="text-[20px]">Sign in</span>
+            <span className="text-[20px]">Sign Up</span>
           </RouteLink>
         </div>
         <IconButton

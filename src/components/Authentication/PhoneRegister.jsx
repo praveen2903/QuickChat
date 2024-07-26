@@ -33,10 +33,22 @@ const PhoneRegister = () => {
     }
   };
 
+  const isNameAlreadyRegistered = async (name) => {
+    try {
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, where('displayName', '==', name));
+      const querySnapshot = await getDocs(q);
+      return !querySnapshot.empty;
+    } catch (error) {
+      console.error("Error checking display name registration:", error);
+      return false;
+    }
+  };
+
   const setUpRecaptcha = (number) => {
     const recaptcha = new RecaptchaVerifier('recaptcha-container', {}, auth);
     recaptcha.render();
-    const confirm=signInWithPhoneNumber(auth, number, recaptcha);
+    const confirm = signInWithPhoneNumber(auth, number, recaptcha);
     console.log(confirm);
     return confirm;
   };
@@ -50,8 +62,18 @@ const PhoneRegister = () => {
       return;
     }
 
+    if (name.length < 5 || name.length > 15) {
+      setErr('Display name must be between 5 and 15 characters.');
+      return;
+    }
+
     if (await isNumberAlreadyRegistered(number)) {
       setErr('Phone number already registered. Please login.');
+      return;
+    }
+
+    if (await isNameAlreadyRegistered(name)) {
+      setErr('Display name already taken. Please choose another.');
       return;
     }
 
@@ -60,7 +82,7 @@ const PhoneRegister = () => {
       setConfirmObj(response);
       setFlag(true);
     } catch (err) {
-      toast.error("failure in setting recaptha")
+      toast.error("Failure in setting reCAPTCHA.");
     }
   };
 
@@ -96,12 +118,13 @@ const PhoneRegister = () => {
         phoneNumber: number,
         displayName: name,
         photoURL: photoURL,
+        provider: "phone",
       });
 
       toast.success(`Registration successful, welcome ${name}`);
       navigate('/chat');
     } catch (err) {
-      toast.error("Incorrect OTP!!!")
+      toast.error("Incorrect OTP!!!");
     }
   };
 
@@ -124,22 +147,22 @@ const PhoneRegister = () => {
           <CardBody className="flex flex-col gap-4">
             <form onSubmit={getOtp} style={{ display: !flag ? 'block' : 'none' }}>
               <div className="form-control">
-              <Typography variant="h6" color="blue-gray" className="-mb-3">
-                Phone Number
-              </Typography>
+                <Typography variant="h6" color="blue-gray" className="-mb-3">
+                  Phone Number
+                </Typography>
                 <PhoneInput
                   defaultCountry="IN"
                   placeholder="Enter phone number"
-                  className="input bg-white text-black input-bordered mt-3"
+                  className="input bg-white text-black border-black mt-3"
                   required
                   value={number}
                   onChange={setNumber}
                 />
               </div>
               <div className="form-control">
-              <Typography variant="h6" color="blue-gray">
-                Name
-              </Typography>
+                <Typography variant="h6" color="blue-gray">
+                  Name
+                </Typography>
                 <Input
                   type="text"
                   label='Enter display name'
@@ -151,9 +174,9 @@ const PhoneRegister = () => {
                 />
               </div>
               <div className="form-control">
-              <Typography variant="h6" color="blue-gray">
-                Profile Photo
-              </Typography>
+                <Typography variant="h6" color="blue-gray">
+                  Profile Photo
+                </Typography>
                 <Input
                   type="file"
                   accept="image/png, image/jpg, image/jpeg, image/avif"
@@ -173,31 +196,31 @@ const PhoneRegister = () => {
                 {err && <span className="text-red-700">{err}</span>}
               </div>
               <div className="form-control">
-              <Typography variant="h6" color="blue-gray" className="-mb-3">
-                Enter OTP
-              </Typography>
+                <Typography variant="h6" color="blue-gray" className="-mb-3">
+                  Enter OTP
+                </Typography>
                 <OTPInput
-                    value={otp}
-                    onChange={setOtp}
-                    numInputs={6}
-                    separator={<span style={{ width: "8px" }}></span>}
-                    isInputNum={true}
-                    shouldAutoFocus={true}
-                    renderInput={renderInput}
-                    inputStyle={{
-                      border: "1px solid transparent",
-                      borderRadius: "8px",
-                      width: "54px",
-                      height: "54px",
-                      fontSize: "16px",
-                      color: "#000",
-                      fontWeight: "400",
-                      caretColor: "blue"
-                    }}
-                    focusStyle={{
-                      border: "1px solid #CFD3DB",
-                      outline: "none"
-                    }}
+                  value={otp}
+                  onChange={setOtp}
+                  numInputs={6}
+                  separator={<span style={{ width: "8px" }}></span>}
+                  isInputNum={true}
+                  shouldAutoFocus={true}
+                  renderInput={renderInput}
+                  inputStyle={{
+                    border: "1px solid transparent",
+                    borderRadius: "8px",
+                    width: "54px",
+                    height: "54px",
+                    fontSize: "16px",
+                    color: "#000",
+                    fontWeight: "400",
+                    caretColor: "blue"
+                  }}
+                  focusStyle={{
+                    border: "1px solid #CFD3DB",
+                    outline: "none"
+                  }}
                 />
               </div>
               <div className="form-control mt-8">
@@ -219,12 +242,11 @@ const PhoneRegister = () => {
                 <Link to="/phonelogin">login</Link>
               </Typography>
             </Typography>
-            
           </CardFooter>
         </Card>
       </div>
     </div>
   );
-}
+};
 
 export default PhoneRegister;

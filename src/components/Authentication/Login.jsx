@@ -62,6 +62,7 @@ export default function Login() {
         googlevalue:googlevalue,
         photoURL:data.user.photoURL,
         displayName:data.user.displayName,
+        provider:"google",
       });
 
       navigate("/chat")
@@ -87,6 +88,7 @@ export default function Login() {
         githubvalue,
         photoURL:data.user.photoURL,
         displayName:data.user.displayName,
+        provider:'github'
       });
 
       navigate("/chat")
@@ -106,6 +108,7 @@ export default function Login() {
         facebookvalue,
         photoURL:data.user.photoURL,
         displayName:data.user.displayName,
+        provider:'facebook',
       });
 
       navigate("/chat")

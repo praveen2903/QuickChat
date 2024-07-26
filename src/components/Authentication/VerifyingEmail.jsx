@@ -71,14 +71,14 @@ const VerifyingEmail = () => {
                 </div>
             </div>
         </div>
-       <Card className="flex items-center justify-center h-screen">
-        <Link to="/register" className="text-3xl float-left my-4 text-black flex gap-3">
+       <div className="flex items-center justify-center h-screen">
+       <Card className="w-auto">
+        <Link to="/register" className="text-3xl float-left my-4 text-black flex pl-3 gap-3">
             <button onClick={DeleteAccount} className='flex hover:text-blue-800'>
               <FaHome size={35}/>
-              <span className="text-sm">Cancel</span>
             </button>
           </Link>
-        <CardBody>
+        <CardBody className="px-24">
           <Typography variant="h5" color="blue-gray" className="mb-2 flex gap-5">
             <img src={img} alt='/'/>
             <svg
@@ -108,6 +108,7 @@ const VerifyingEmail = () => {
           <button onClick={handleVerify} className='p-4 rounded-full font-bold text-white bg-blue-800 hover:bg-blue-500'>Verify</button>
         </CardFooter>
       </Card>
+       </div>
     </div>
   )
 }
