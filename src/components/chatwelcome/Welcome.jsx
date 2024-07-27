@@ -22,7 +22,7 @@ const Welcome = () => {
               }}
             ></div>
             <div className="flex items-center justify-end w-full">
-              <span className="m-7 text-xl font-serif text-justify">Discover a new way to stay connected with your friends and family. Whether you&apos;re catching up with old friends or making new ones, our real-time messaging and easy-to-use interface ensure you never miss a moment. Share your life, send instant messages, and create unforgettable memories with ChatApp.</span>
+              <span className="m-7 ml-20 text-xl font-serif text-justify">Discover a new way to stay connected with your friends and family. Whether you&apos;re catching up with old friends or making new ones, our real-time messaging and easy-to-use interface ensure you never miss a moment. Share your life, send instant messages, and create unforgettable memories with ChatApp.</span>
               <img src={chat} alt="no image" className="h-[300px] w-[300px]"/>
             </div>
           </div>

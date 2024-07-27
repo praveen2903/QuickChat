@@ -14,6 +14,8 @@ import OTPInput from 'react-otp-input';
 const PhoneRegister = () => {
   const [number, setNumber] = useState('');
   const [name, setName] = useState('');
+  const [nameerr,setNameerr]=useState("");
+  const [numerr,setNumerr]=useState("");
   const [err, setErr] = useState('');
   const [otp, setOtp] = useState('');
   const [flag, setFlag] = useState(false);
@@ -46,25 +48,11 @@ const PhoneRegister = () => {
   };
 
   const setUpRecaptcha = (number) => {
-    try {
-      const recaptcha = new RecaptchaVerifier('recaptcha-container', {
-        'size': 'invisible',
-        'callback': (response) => {
-          console.log("reCAPTCHA solved:", response);
-        },
-        'expired-callback': () => {
-          console.warn("reCAPTCHA expired");
-        }
-      }, auth);
-      recaptcha.render();
-      const confirm = signInWithPhoneNumber(auth, number, recaptcha);
-      console.log(confirm);
-      return confirm;
-    } catch (error) {
-      console.error("Error setting up reCAPTCHA:", error);
-      toast.error("Error setting up reCAPTCHA. Please try again later.");
-      throw error;
-    }
+    const recaptcha = new RecaptchaVerifier(auth, 'recaptcha-container', {});
+    recaptcha.render();
+    const confirm= signInWithPhoneNumber(auth, number, recaptcha);
+    console.log(confirm);
+    return confirm;
   };
 
   const getOtp = async (e) => {
@@ -72,22 +60,22 @@ const PhoneRegister = () => {
     setErr('');
 
     if (number === '' || name === '') {
-      setErr('Please enter a valid phone number and display name.');
+      setNameerr('Please enter a valid phone number and display name.');
       return;
     }
 
     if (name.length < 5 || name.length > 15) {
-      setErr('Display name must be between 5 and 15 characters.');
+      setNameerr('Display name must be between 5 and 15 characters.');
       return;
     }
 
     if (await isNumberAlreadyRegistered(number)) {
-      setErr('Phone number already registered. Please login.');
+      setNumerr('Phone number already registered. Please login.');
       return;
     }
 
     if (await isNameAlreadyRegistered(name)) {
-      setErr('Display name already taken. Please choose another.');
+      setNameerr('Display name already taken. Please choose another.');
       return;
     }
 
@@ -172,6 +160,9 @@ const PhoneRegister = () => {
                   value={number}
                   onChange={setNumber}
                 />
+                {
+                  numerr && <span className='text-red-700'>Phone Number is already Registered....</span>
+                }
               </div>
               <div className="form-control">
                 <Typography variant="h6" color="blue-gray">
@@ -186,6 +177,9 @@ const PhoneRegister = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
+                {
+                  nameerr && <div>Name is already taken ...</div>
+                }
               </div>
               <div className="form-control">
                 <Typography variant="h6" color="blue-gray">
