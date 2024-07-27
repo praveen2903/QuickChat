@@ -141,7 +141,7 @@ export default function Login() {
   return (
     <div>
       <AuthNav/>
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center mt-8 md:mt-1">
         <Card className="w-96">
           <CardHeader
             variant="gradient"

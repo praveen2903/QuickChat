@@ -33,7 +33,7 @@ function ResetPassword() {
   return (
     <div>
       <AuthNav/>
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center mt-8 md:mt-1">
         <form>
           <Card className="w-96">
             <CardHeader

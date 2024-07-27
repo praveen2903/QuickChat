@@ -1,13 +1,24 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import { AuthContext } from '../../context/AuthenticationContext';
-import { useContext } from 'react';
+import { FaGoogle, FaFacebook, FaGithub, FaPhoneAlt } from "react-icons/fa";
+import { MdOutlineMail } from "react-icons/md";
+import EnlargePic from '../shared/EnlargedPic';
+
+const providerIcons = {
+  google: <FaGoogle size={25} />,
+  facebook: <FaFacebook size={25} />,
+  github: <FaGithub size={25} />,
+  phone: <FaPhoneAlt size={25} />,
+  email: <MdOutlineMail size={25} />
+};
 
 const MakeFriends = () => {
   const { currentUser } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -29,27 +40,64 @@ const MakeFriends = () => {
     fetchUsers();
   }, [currentUser]);
 
+  const getProviderIcon = (provider) => {
+    return providerIcons[provider] || "User";
+  };
+
+  const filteredUsers = users.filter(user =>
+    user.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const [enlarged, setEnlarged] = useState(false);
+  function toggleEnlargedView() {
+    setEnlarged(!enlarged);
+  }
+
   return (
-    <div>
-      <div className='m-5'>
-        {loading ? (
-          <span className="loading loading-spinner loading-md"></span>
-        ) : (
-          <div>
-            <ul>
-              {users.map(user => (
-                <li key={user.id}>
-                  <div className='flex'>
-                    <img src={user.photoURL} alt={user.displayName} width={60} height={30} className='rounded-full' />
-                    <span className='text-xl m-6'>Name: {user.displayName}</span>
-                    <p>Email: {user.email}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+    <div className='m-5'>
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Search users..."
+          className="border p-2 w-full"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </div>
+      {loading ? (
+        <div className='flex items-center justify-center'>
+          <span className="loading loading-dots loading-lg"></span>        
+        </div>
+      ) : (
+        <div className=''>
+          <ul>
+            {filteredUsers.map(user => (
+              <li key={user.id} className="mb-4">
+                <div className='flex items-center outline-1 p-4 rounded'>
+                  <div onClick={toggleEnlargedView}>
+                    <img src={user.photoURL} alt={user.displayName} width={60} height={60} className='rounded-full mr-4' />
+                  </div>
+                  <div className='flex-1 flex items-center'>
+                    <div className='text-xl font-semibold mr-4'>{user.displayName}</div>
+                    <div className='relative group'>
+                      {getProviderIcon(user.provider)}
+                      <div className="absolute left-8 top-0 hidden bg-gray-800 text-white text-sm p-2 rounded group-hover:block">
+                        {user.email || user.phone}
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    className='bg-gray-200 px-4 py-2 rounded ml-auto'
+                  >
+                    Message
+                  </button>
+                </div>
+                {enlarged && <EnlargePic url={user.photoURL} onClose={toggleEnlargedView} />}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
