@@ -19,7 +19,7 @@ import {toast} from 'react-toastify';
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, db , googleprovider, githubprovider, facebookprovider } from "../../firebase/firebase";
 import { useState, useEffect } from "react";
-import { doc, setDoc, getDocs, collection, query, where } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -35,28 +35,23 @@ export default function Login() {
     setFacebookValue(localStorage.getItem("email") || '');
   },[])
 
-  const isEmailAlreadyRegistered = async (email) => {
-    try {
-      const usersRef = collection(db, 'users');
-      const q = query(usersRef, where('email', '==', email));
-      const querySnapshot = await getDocs(q);
-      return !querySnapshot.empty;
-    } catch (error) {
-      console.error("Error checking email registration:", error);
-      return false;
-    }
-  }
+  // const isEmailAlreadyRegistered = async (email) => {
+  //   try {
+  //     const usersRef = collection(db, 'users');
+  //     const q = query(usersRef, where('email', '==', email));
+  //     const querySnapshot = await getDocs(q);
+  //     return !querySnapshot.empty;
+  //   } catch (error) {
+  //     console.error("Error checking email registration:", error);
+  //     return false;
+  //   }
+  // }
 
   const handleGoogleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, googleprovider);
       const email = result.user.email;
       const userRef = doc(db, "users", result.user.uid);
-
-      if (email && await isEmailAlreadyRegistered(email)) {
-        alert(`User with email ${email} is already registered.`);
-        return;
-      }
 
       await setDoc(userRef, {
         uid: result.user.uid,
@@ -81,10 +76,6 @@ export default function Login() {
       const email = result.user.email;
       const userRef = doc(db, "users", result.user.uid);
 
-      if (email && await isEmailAlreadyRegistered(email)) {
-        alert(`User with email ${email} is already registered.`);
-        return;
-      }
 
       await setDoc(userRef, {
         uid: result.user.uid,
@@ -109,10 +100,6 @@ export default function Login() {
       const email = result.user.email;
       const userRef = doc(db, "users", result.user.uid);
 
-      if (email && await isEmailAlreadyRegistered(email)) {
-        alert(`User with email ${email} is already registered.`);
-        return;
-      }
 
       await setDoc(userRef, {
         uid: result.user.uid,

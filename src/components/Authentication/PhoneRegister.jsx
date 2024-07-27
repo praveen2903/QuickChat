@@ -46,11 +46,25 @@ const PhoneRegister = () => {
   };
 
   const setUpRecaptcha = (number) => {
-    const recaptcha = new RecaptchaVerifier('recaptcha-container', {}, auth);
-    recaptcha.render();
-    const confirm = signInWithPhoneNumber(auth, number, recaptcha);
-    console.log(confirm);
-    return confirm;
+    try {
+      const recaptcha = new RecaptchaVerifier('recaptcha-container', {
+        'size': 'invisible',
+        'callback': (response) => {
+          console.log("reCAPTCHA solved:", response);
+        },
+        'expired-callback': () => {
+          console.warn("reCAPTCHA expired");
+        }
+      }, auth);
+      recaptcha.render();
+      const confirm = signInWithPhoneNumber(auth, number, recaptcha);
+      console.log(confirm);
+      return confirm;
+    } catch (error) {
+      console.error("Error setting up reCAPTCHA:", error);
+      toast.error("Error setting up reCAPTCHA. Please try again later.");
+      throw error;
+    }
   };
 
   const getOtp = async (e) => {
@@ -231,16 +245,9 @@ const PhoneRegister = () => {
             </form>
           </CardBody>
           <CardFooter className="pt-0">
-            <Typography variant="small" className="mt-6 flex justify-center">
-              have an account?
-              <Typography
-                as="p"
-                variant="small"
-                color="blue-gray"
-                className="ml-1 font-bold"
-              >
-                <Link to="/phonelogin">login</Link>
-              </Typography>
+            <Typography variant="small" className="flex justify-center gap-1">
+              Already have an account?
+              <Link to="/login" className="text-blue-500 hover:text-blue-700 font-bold">Login</Link>
             </Typography>
           </CardFooter>
         </Card>

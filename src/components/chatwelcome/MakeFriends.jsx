@@ -19,6 +19,7 @@ const MakeFriends = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [enlargedPhotoURL, setEnlargedPhotoURL] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -48,10 +49,10 @@ const MakeFriends = () => {
     user.displayName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  const [enlarged, setEnlarged] = useState(false);
-  function toggleEnlargedView() {
-    setEnlarged(!enlarged);
-  }
+
+  const toggleEnlargedView = (photoURL) => {
+    setEnlargedPhotoURL(photoURL);
+  };
 
   return (
     <div className='m-5'>
@@ -74,7 +75,7 @@ const MakeFriends = () => {
             {filteredUsers.map(user => (
               <li key={user.id} className="mb-4">
                 <div className='flex items-center outline-1 p-4 rounded'>
-                  <div onClick={toggleEnlargedView}>
+                  <div onClick={() => toggleEnlargedView(user.photoURL)}>
                     <img src={user.photoURL} alt={user.displayName} width={60} height={60} className='rounded-full mr-4' />
                   </div>
                   <div className='flex-1 flex items-center'>
@@ -82,7 +83,7 @@ const MakeFriends = () => {
                     <div className='relative group'>
                       {getProviderIcon(user.provider)}
                       <div className="absolute left-8 top-0 hidden bg-gray-800 text-white text-sm p-2 rounded group-hover:block">
-                        {user.email || user.phone || user.googlevalue || user.githubvalue || user.facebookvalue}
+                        {user.email || user.phone } 
                       </div>
                     </div>
                   </div>
@@ -92,12 +93,12 @@ const MakeFriends = () => {
                     Message
                   </button>
                 </div>
-                {enlarged && <EnlargePic url={user.photoURL} onClose={toggleEnlargedView} />}
               </li>
             ))}
           </ul>
         </div>
       )}
+      {enlargedPhotoURL && <EnlargePic url={enlargedPhotoURL} onClose={() => setEnlargedPhotoURL(null)} />}
     </div>
   );
 };

@@ -27,8 +27,8 @@ const PhoneLogin = () => {
     return confirm;
   };
 
-  const checkPhoneNumberRegistered = async (phoneNumber) => {
-    const docRef = doc(db, 'users', phoneNumber);
+  const checkPhoneNumberRegistered = async (number) => {
+    const docRef = doc(db, 'users', number);
     const docSnap = await getDoc(docRef);
     return docSnap.exists();
   };

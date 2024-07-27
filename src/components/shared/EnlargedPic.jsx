@@ -13,7 +13,7 @@ const EnlargePic = ({ url, onClose }) => {
         >
           <CgCloseO/>
         </button>
-        <img src={url} alt='' className="h-[300px] w-[300px] md:h-[500px] md:w-[500px]" />
+        <img src={url} alt='' className="h-[200px] w-[200px] md:h-[300px] md:w-[300px]" />
       </motion.div>
     </motion.div>
   );
