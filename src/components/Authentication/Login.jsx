@@ -20,7 +20,7 @@ import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, db , googleprovider, githubprovider, facebookprovider } from "../../firebase/firebase";
 import { useState, useEffect } from "react";
 import { doc, setDoc, getDocs, collection, query, where } from "firebase/firestore";
- 
+
 export default function Login() {
   const navigate = useNavigate();
   const [googlevalue,setGoogleValue]=useState('');
@@ -30,15 +30,15 @@ export default function Login() {
   const [password,setPassword]=useState("");
 
   useEffect(()=>{
-    setGoogleValue(localStorage.getItem('email'))
-    setGithubValue(localStorage.getItem("email"))
-    setFacebookValue(localStorage.getItem("email"))
+    setGoogleValue(localStorage.getItem('email') || '');
+    setGithubValue(localStorage.getItem("email") || '');
+    setFacebookValue(localStorage.getItem("email") || '');
   },[])
 
   const isEmailAlreadyRegistered = async (email) => {
     try {
       const usersRef = collection(db, 'users');
-      const q = query(usersRef, where('googlevalue', '==', email), where('githubvalue', '==', email));
+      const q = query(usersRef, where('email', '==', email));
       const querySnapshot = await getDocs(q);
       return !querySnapshot.empty;
     } catch (error) {
@@ -47,78 +47,89 @@ export default function Login() {
     }
   }
 
-  const handleGoogleLogin=async ()=>{
-    console.log(googlevalue)
-    const email = googlevalue;
-    if (email && await isEmailAlreadyRegistered(email)) {
-      alert(`User with email ${email} is already registered with Google.`);
-      return;
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleprovider);
+      const email = result.user.email;
+      const userRef = doc(db, "users", result.user.uid);
+
+      if (email && await isEmailAlreadyRegistered(email)) {
+        alert(`User with email ${email} is already registered.`);
+        return;
+      }
+
+      await setDoc(userRef, {
+        uid: result.user.uid,
+        email: email,
+        photoURL: result.user.photoURL,
+        displayName: result.user.displayName,
+        provider: "google",
+      });
+
+      setGoogleValue(email);
+      localStorage.setItem("email", email);
+      navigate("/chat");
+      toast.success(`Google Login successful, welcome ${result.user.displayName}`);
+    } catch (err) {
+      console.error("Google Authentication error:", err);
     }
-    signInWithPopup(auth,googleprovider).then(async (data)=>{
-      setGoogleValue(data.user.email);
-      localStorage.setItem("email",data.user.email);
-      await setDoc(doc(db, "users", data.user.uid), {
-        uid: data.user.uid,
-        googlevalue:googlevalue,
-        photoURL:data.user.photoURL,
-        displayName:data.user.displayName,
-        provider:"google",
-      });
-
-      navigate("/chat")
-      toast.success(`Google Login sucessful,welcome ${data.user.displayName}`)
-    })
-    .catch((err)=>{
-      console.error("Google Authentication error:", err);
-    })
   }
 
-  const handleGithubLogin=async ()=>{
-    const email = githubvalue;
-    if (email && await isEmailAlreadyRegistered(email)) {
-      alert(`User with email ${email} is already registered with Google.`);
-      return;
+  const handleGithubLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, githubprovider);
+      const email = result.user.email;
+      const userRef = doc(db, "users", result.user.uid);
+
+      if (email && await isEmailAlreadyRegistered(email)) {
+        alert(`User with email ${email} is already registered.`);
+        return;
+      }
+
+      await setDoc(userRef, {
+        uid: result.user.uid,
+        email: email,
+        photoURL: result.user.photoURL,
+        displayName: result.user.displayName,
+        provider: "github",
+      });
+
+      setGithubValue(email);
+      localStorage.setItem("email", email);
+      navigate("/chat");
+      toast.success(`Github Login successful, welcome ${result.user.displayName}`);
+    } catch (err) {
+      console.error("Github Authentication error:", err);
     }
-    signInWithPopup(auth,githubprovider).then(async (data)=>{
-      setGithubValue(data.user.email);
-      localStorage.setItem("email",data.user.email);
-
-      await setDoc(doc(db, "users", data.user.uid), {
-        uid: data.user.uid,
-        githubvalue,
-        photoURL:data.user.photoURL,
-        displayName:data.user.displayName,
-        provider:'github'
-      });
-
-      navigate("/chat")
-      toast.success(`Github Login sucessful,welcome ${data.user.displayName}`)
-    })
-    .catch((err)=>{
-      console.error("Google Authentication error:", err);
-    })
-  }
-  
-  const handleFacebookLogin=()=>{
-    signInWithPopup(auth,facebookprovider).then(async (data)=>{
-      setFacebookValue(data.user.email);
-      localStorage.setItem("email",data.user.email);
-      await setDoc(doc(db, "users", data.user.uid), {
-        uid: data.user.uid,
-        facebookvalue,
-        photoURL:data.user.photoURL,
-        displayName:data.user.displayName,
-        provider:'facebook',
-      });
-
-      navigate("/chat")
-      toast.success(`Facebook Login sucessful,welcome ${data.user.displayName}`)
-    })
-    .catch((err)=>{
-      console.error("Google Authentication error:", err);
-    })
   }
 
+  const handleFacebookLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, facebookprovider);
+      const email = result.user.email;
+      const userRef = doc(db, "users", result.user.uid);
+
+      if (email && await isEmailAlreadyRegistered(email)) {
+        alert(`User with email ${email} is already registered.`);
+        return;
+      }
+
+      await setDoc(userRef, {
+        uid: result.user.uid,
+        email: email,
+        photoURL: result.user.photoURL,
+        displayName: result.user.displayName,
+        provider: "facebook",
+      });
+
+      setFacebookValue(email);
+      localStorage.setItem("email", email);
+      navigate("/chat");
+      toast.success(`Facebook Login successful, welcome ${result.user.displayName}`);
+    } catch (err) {
+      console.error("Facebook Authentication error:", err);
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -134,7 +145,7 @@ export default function Login() {
     }
   };
 
-  const handleResetPassword=()=>{
+  const handleResetPassword = () => {
     navigate("/reset")
   }
 

@@ -82,7 +82,7 @@ const MakeFriends = () => {
                     <div className='relative group'>
                       {getProviderIcon(user.provider)}
                       <div className="absolute left-8 top-0 hidden bg-gray-800 text-white text-sm p-2 rounded group-hover:block">
-                        {user.email || user.phone}
+                        {user.email || user.phone || user.googlevalue || user.githubvalue || user.facebookvalue}
                       </div>
                     </div>
                   </div>
